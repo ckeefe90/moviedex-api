@@ -20,21 +20,11 @@ app.use(function validateBearerToken(req, res, next) {
     next();
 });
 
-app.use((error, req, res, next) => {
-    let response;
-    if (process.env.NODE_ENV === "production") {
-        response = { error: { message: "server" } };
-    } else {
-        response = { error };
-    }
-    res.status(500).json(response);
-});
-
 function handleGetMovie(req, res) {
     const { genre, country, avg_vote } = req.query;
-    if (genre && typeof genre !== "string")
+    if (genre)
         res.status(400).send("genre must be a string.");
-    if (country && typeof country !== "string")
+    if (country)
         res.status(400).send("country must be a string.");
     if (avg_vote && isNaN(Number(avg_vote)))
         res.status(400).send("avg_vote must be a number.");
@@ -50,6 +40,16 @@ function handleGetMovie(req, res) {
 }
 
 app.get('/movie', handleGetMovie)
+
+app.use((error, req, res, next) => {
+    let response;
+    if (process.env.NODE_ENV === "production") {
+        response = { error: { message: "server" } };
+    } else {
+        response = { error };
+    }
+    res.status(500).json(response);
+});
 
 const PORT = process.env.PORT || 8000;
 
