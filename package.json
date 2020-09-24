@@ -5,21 +5,28 @@
     "main": "index.js",
     "scripts": {
         "start": "node server.js",
-        "dev": "nodemon server.js"
+        "dev": "nodemon server.js",
+        "predeploy": "npm audit",
+        "deploy": "git push heroku master"
     },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/ckeefe90/moviedex-api.git"
     },
     "keywords": [],
-    "author": "",
+    "engines": {
+        "node": "10.19.0"
+    },
+    "author": "Caitlin Keefe",
     "license": "ISC",
     "bugs": {
         "url": "https://github.com/ckeefe90/moviedex-api/issues"
     },
     "homepage": "https://github.com/ckeefe90/moviedex-api#readme",
     "dependencies": {
+        "cors": "^2.8.5",
         "express": "^4.17.1",
+        "helmet": "^4.1.1",
         "morgan": "^1.10.0"
     },
     "devDependencies": {

@@ -5,12 +5,11 @@ const cors = require("cors");
 const MOVIES = require('./movies-data-small.json');
 
 const app = express();
+const morganSetting = process.env.NODE_ENV === "production" ? "tiny" : "common";
 
-app.use(morgan("dev"));
+app.use(morgan(morganSetting));
 app.use(helmet());
 app.use(cors());
-
-console.log(process.env.API_TOKEN);
 
 app.use(function validateBearerToken(req, res, next) {
     const apiToken = process.env.API_TOKEN;
@@ -19,6 +18,16 @@ app.use(function validateBearerToken(req, res, next) {
         return res.status(401).json({ error: "Unauthorized request" });
     }
     next();
+});
+
+app.use((error, req, res, next) => {
+    let response;
+    if (process.env.NODE_ENV === "production") {
+        response = { error: { message: "server" } };
+    } else {
+        response = { error };
+    }
+    res.status(500).json(response);
 });
 
 function handleGetMovie(req, res) {
@@ -42,8 +51,6 @@ function handleGetMovie(req, res) {
 
 app.get('/movie', handleGetMovie)
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
-app.listen(PORT, () => {
-    console.log(`Server listening at http://localhost:${PORT}`);
-});
+app.listen(PORT);
